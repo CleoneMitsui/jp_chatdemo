@@ -10,15 +10,14 @@ from utils import generate_participant_id
 # set page config
 st.set_page_config(page_title="Chatroom Demo (Japanese)", page_icon="💬")
 
-st.markdown("""
-<style>
-/* hide 'Made with Streamlit' footer and the top-right menu */
-footer {visibility: hidden;}
-#MainMenu {visibility: hidden;}
-</style>
-""", unsafe_allow_html=True)
 
-
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # --- QUERY PARAM RETRIEVAL ---
 params = st.query_params

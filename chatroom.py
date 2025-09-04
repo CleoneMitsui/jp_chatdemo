@@ -10,6 +10,19 @@ from assign_conditions import get_even_assignment
 LANG = "ja"  # "ja" for Japanese mode
 
 
+# chatroom.py
+from datetime import datetime
+import zoneinfo
+
+JST = zoneinfo.ZoneInfo("Asia/Tokyo")
+
+def now_jst_str(fmt="%Y/%m/%d %H:%M:%S"):
+    return datetime.now(JST).strftime(fmt)
+
+
+
+
+
 
 if "agent_rounds_raw" not in st.session_state:
     st.session_state.agent_rounds_raw = []
@@ -37,7 +50,7 @@ def render_chat():
 
     # warning banner
     st.markdown(
-        "<p style='color:red; font-weight:bold;'>⚠️ Please do not refresh the page. Doing so will restart the study and erase your answers.</p>",
+        "<p style='color:red; font-weight:bold;'>⚠️ 途中でページを再読み込みしないでください。</p>",
         unsafe_allow_html=True
     )
 
@@ -47,34 +60,34 @@ def render_chat():
 
     client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-    #### translate topics.py
-    from functools import lru_cache
+    # #### translate topics.py
+    # from functools import lru_cache
 
-    @lru_cache(maxsize=8)
-    def translate_seed_lines(lines_tuple):
-        # lines_tuple is a tuple of strings so it's hashable for caching
-        if LANG != "ja":
-            return list(lines_tuple)
-        prompt = (
-            "Translate the following chat lines into natural, casual Japanese used among coworkers. "
-            "Keep names as-is. Keep the meaning and tone. Return one line per bullet, in order."
-        )
-        content = "\n".join([f"- {x}" for x in lines_tuple])
-        resp = client.chat.completions.create(
-            model="gpt-4.1",
-            messages=[
-                {"role": "system", "content": prompt},
-                {"role": "user", "content": content}
-            ],
-            temperature=0.2
-        )
-        out = resp.choices[0].message.content.strip().split("\n")
-        # strip leading bullets / whitespace
-        out = [s.lstrip("-• ").strip() for s in out if s.strip()]
-        # if the model returns fewer lines for some reason, fall back to originals
-        if len(out) != len(lines_tuple):
-            return list(lines_tuple)
-        return out
+    # lru_cache(maxsize=8)
+    # def translate@_seed_lines(lines_tuple):
+    #     # lines_tuple is a tuple of strings so it's hashable for caching
+    #     if LANG != "ja":
+    #         return list(lines_tuple)
+    #     prompt = (
+    #         "Translate the following chat lines into natural, casual Japanese used among coworkers. "
+    #         "Keep names as-is. Keep the meaning and tone. Return one line per bullet, in order."
+    #     )
+    #     content = "\n".join([f"- {x}" for x in lines_tuple])
+    #     resp = client.chat.completions.create(
+    #         model="gpt-4.1",
+    #         messages=[
+    #             {"role": "system", "content": prompt},
+    #             {"role": "user", "content": content}
+    #         ],
+    #         temperature=0.2
+    #     )
+    #     out = resp.choices[0].message.content.strip().split("\n")
+    #     # strip leading bullets / whitespace
+    #     out = [s.lstrip("-• ").strip() for s in out if s.strip()]
+    #     # if the model returns fewer lines for some reason, fall back to originals
+    #     if len(out) != len(lines_tuple):
+    #         return list(lines_tuple)
+    #     return out
 
 
 
@@ -137,17 +150,14 @@ def render_chat():
         本アプリケーションはデモ用です。<br><br>
                     
         <strong>データとAIの利用について：</strong><br>
-          ここでは、AIエージェントと模擬グループチャットで対話します。あなたが入力するテキストは、生成AIモデルによりリアルタイムで処理・応答生成されます。本デモで得られるデータについては匿名性が保証され、個⼈が特定できるかたちで解析されることはありません。次のページに進むことで、AIエージェントとの対話およびデータの研究利用に同意したものとみなされます。
+          ここでは、AIエージェントと模擬グループチャットで対話します。あなたが入力するテキストは、生成AIモデルによりリアルタイムで処理・応答生成されます。本デモで得られるデータについては匿名性が保証され、個⼈が特定できるかたちで解析されることはありません。次のページに進むことで、AIエージェントとの対話およびデータの利用に同意したものとみなされます。
         </div>
          <br>
         <span style="color:#218838; font-weight:bold; font-size:17px;">
-          📌 あなたは同僚から招待されて、気軽な雑談グループチャットに参加することになったと想像してください。実際の同僚と話しているつもりで、自然にやり取りしてください。<br><br>
-                    
-        このグループは仕事用の公式チャンネルではなく、雑談や集まりの予定、日常の話題を気軽に交わす場です。
-        入室すると、これまでのやり取りの一部が表示されます。いつでも会話に加わってください。<br><br>
-        </span>
-
-        参加する前に、ニックネームを入力してください。<br>
+        📌 あなたは同僚から招待されて、気軽な雑談グループチャットに参加することになったと想像してください。実際の同僚と話しているつもりで、自然にやり取りしてください。<br><br>
+        このグループは仕事用の公式チャンネルではなく、雑談や集まりの予定、日常の話題を気軽に交わす場です。入室すると、これまでのやり取りの一部が表示されます。いつでも会話に加わってください。<br><br>
+        参加する前に、ニックネームを入力してください。
+        </span><br>
         <span style='font-size:15px; color:gray;'>※このニックネームは記録されず、グループ内での識別のみに使用されます。</span>
         """, unsafe_allow_html=True)
 
@@ -179,11 +189,11 @@ def render_chat():
                 topic=st.session_state.assigned_topic  # force balanced topic
             )
 
-            # translate once per session if LANG == "ja"
-            speakers = [spk for spk, line in preset_messages]
-            lines = [line for spk, line in preset_messages]
-            translated = translate_seed_lines(tuple(lines))
-            preset_messages = list(zip(speakers, translated))
+            # # translate once per session if LANG == "ja"
+            # speakers = [spk for spk, line in preset_messages]
+            # lines = [line for spk, line in preset_messages]
+            # translated = translate_seed_lines(tuple(lines))
+            # preset_messages = list(zip(speakers, translated))
 
 
             st.session_state.selected_topic = topic_key
@@ -193,7 +203,7 @@ def render_chat():
                     "role": "assistant",
                     "speaker": speaker,
                     "content": line,
-                    "timestamp": datetime.now().strftime("%H:%M:%S"),
+                    "timestamp": now_jst_str("%H:%M:%S"),
                     "timestamp_unix": time.time()
                 })
 
@@ -207,7 +217,7 @@ def render_chat():
     else:
         st.subheader("Group Chat Begins 💬")
         group_members = st.session_state.group_members
-        st.markdown(f"👥 **Members:** {', '.join(group_members)} and **You**")
+        st.markdown(f"👥 **Members:** {'さん、'.join(group_members)}さん と **あなた**")
 
 
         # SHOW ALL MESSAGES
@@ -265,7 +275,7 @@ def render_chat():
             st.session_state.messages.append({
                 "role": "user",
                 "content": user_input,
-                "timestamp": datetime.now().strftime("%H:%M:%S"),
+                "timestamp": now_jst_str("%H:%M:%S"),
                 "timestamp_unix": now
             })
 
@@ -383,8 +393,6 @@ def render_chat():
 
 
 
-
-
             # loop
             ##### REGULAR AI RESPONSE BLOCK ####
             for i, ai_name in enumerate(ai_names):
@@ -392,7 +400,7 @@ def render_chat():
                     time.sleep(random.uniform(1.8, 3.2))  # "thinking" delay before the 1st agent only
 
                 # with st.chat_message("assistant"):
-                with st.spinner(f"{ai_name} is typing{'.' * random.randint(1, 3)}"):
+                with st.spinner(f"{ai_name}さん is typing{'.' * random.randint(1, 3)}"):
                     time.sleep(random.uniform(2.5, 4.5)) # "typing" delay
                     context = [
                         {"role": "user", "content": f"You: {m['content']}"} if m["role"] == "user"
@@ -417,10 +425,11 @@ def render_chat():
                             "Use a natural, informal tone: contractions, everyday expressions, and casual style. "
                             "Mimic how real people type, including slight disfluencies. "
                             "Vary the length and tone of your replies, sometimes short, sometimes more expressive. "
-                            "Do not mention you're an AI or use overly formal language. "
+                            "Do not mention you're an AI. "
                             # --- language forcing ---
+                            "職場ですので、丁寧語を常に使ってください。"
                             "From now on, write **only in Japanese** in a natural, casual workplace style."
-                            "Do take into consideration that you are Japanese, speaking with Japanese coworkers."
+                            "Do take into consideration that you are Japanese, living in Japan, speaking with Japanese coworkers."
                         )}] + context,
 
                         temperature=0.7
@@ -436,8 +445,9 @@ def render_chat():
                         else:
                             break  # no prefix matched
 
-                    timestamp = datetime.now().strftime("%H:%M:%S")
-                    display_time = datetime.now().strftime("%H:%M")
+                    timestamp = now_jst_str("%H:%M:%S")
+                    display_time = now_jst_str("%H:%M")
+
                     message(
                         f"**{ai_name}:** {reply}\n\n<i style='color:gray; font-size: 0.8em'>{display_time}</i>",
                         is_user=False,
@@ -479,8 +489,6 @@ def render_chat():
             # --- follow-up prompt styles per agent ---
             bigfive_followup_styles = {
                 "HO": [
-                    "Toss out a curious or creative question, and use all lowercase.",
-                    "Make an offbeat connection and invite others into the idea.",
                     "Bring up a new angle and casually bring {name} into the mix."
                 ],
                 "LO": [
@@ -495,8 +503,8 @@ def render_chat():
                 ],
                 "LC": [
                     "Drop a casual, slightly messy comment that jokingly pulls in {name}.",
-                    "Admit to being a bit off topic and pull others in with humour.",
-                    "Say something fun, unstructured, and use all lowercase."
+                    "Admit to being a bit off topic and pull others in back to to topic with humour.",
+                    "Say something fun, unstructured, and 句読点をあまり使わない.."
                 ],
                 "HE": [
                     "Say something fun or expressive.",
@@ -553,9 +561,9 @@ def render_chat():
                     "Maintain your ideological stance. You can acknowledge differing views politely, but do not shift your position. "
                     "Do not invent any other names outside this group."
                     # --- language forcing ---
+                    "職場ですので、丁寧語を常に使ってください。"
                     "From now on, write **only in Japanese** in a natural, casual workplace style."
-                    "Do take into consideration that you are Japanese, speaking with Japanese coworkers."
-                    "Speak like how a Japanese would speak."
+                    "Do take into consideration that you are Japanese, living in Japan, speaking with Japanese coworkers."
                     f"{style}"
                 )
 
@@ -579,8 +587,9 @@ def render_chat():
                 reply = reply.replace("—", "...")
 
 
-                timestamp = datetime.now().strftime("%H:%M:%S")
-                display_time = datetime.now().strftime("%H:%M")
+                timestamp = now_jst_str("%H:%M:%S")
+                display_time = now_jst_str("%H:%M")
+
                 message(
                     f"**{followup_speaker}:** {reply}\n\n<i style='color:gray; font-size: 0.8em'>{display_time}</i>",
                     is_user=False,

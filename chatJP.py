@@ -10,6 +10,16 @@ from utils import generate_participant_id
 # set page config
 st.set_page_config(page_title="Chatroom Demo (Japanese)", page_icon="💬")
 
+st.markdown("""
+<style>
+/* hide 'Made with Streamlit' footer and the top-right menu */
+footer {visibility: hidden;}
+#MainMenu {visibility: hidden;}
+</style>
+""", unsafe_allow_html=True)
+
+
+
 # --- QUERY PARAM RETRIEVAL ---
 params = st.query_params
 prolific_pid = params.get("PROLIFIC_PID", "testuser")
@@ -266,7 +276,7 @@ elif st.session_state.page == "final_survey":
         "Professional degree (e.g., MD, JD)": 7, "Doctorate (e.g., PhD, EdD)": 8
     }
     IDEOLOGY_MAP = {"liberal": 1, "conservative": 2}
-    TOPIC_MAP = {"guns": 1, "immigration": 2, "abortion": 3, "vaccines": 4, "gender": 5}
+    TOPIC_MAP = {"surname": 1, "tourism": 2, "employment": 3, "medical": 4, "nuclear": 5}
 
     if st.button("Submit"):
         # validation: make sure emotional questions are answered

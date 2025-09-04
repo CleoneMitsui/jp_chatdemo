@@ -1,68 +1,67 @@
 import random
 
 topics = {
-    "guns": {
+    "surname": {
         "liberal": [
-            ("{{agent1}}", "Gun violence is out of control again, and people still act like stricter gun laws are some radical idea."),
-            ("{{agent2}}", "It breaks my heart every time there’s another school shooting. How many families have to suffer before we act?"),
-            ("{{agent3}}", "The data is clear, countries with stricter regulations have fewer gun deaths. Anyway, welcome to the group, {{user_name}}. What are your thoughts on this?")
+            ("{{agent1}}", "夫婦別姓が認められないのは正直不便ですよね。名前を変えるたびに手続きも大変ですし…"),
+            ("{{agent2}}", "そうなんです。結婚しても自分の名字を残したい方は多いので、社会に合わせて柔軟にした方が良いと思います"),
+            ("{{agent3}}", "確かに、海外では当たり前で、日本でも制度を整えるべきかもしれませんね。{{user_name}}さんはどう思われますか。")
         ],
         "conservative": [
-            ("{{agent1}}", "Here we go again...they want more gun restrictions as if that’s the magic fix."),
-            ("{{agent2}}", "People deserve to feel safe, but banning guns won’t stop crime. Responsible ownership matters."),
-            ("{{agent3}}", "Gun rights are constitutionally protected for a reason. Let’s not pretend more laws equal more safety. Anyway, welcome to the group, {{user_name}}. What are your thoughts on this?")
+            ("{{agent1}}", "私は同じ姓を名乗るからこそ家族の一体感が保たれると思うんですよね。"),
+            ("{{agent2}}", "そうですね。多少の不便はあっても、伝統や家族のつながりを守る方が大事かもしれません。"),
+            ("{{agent3}}", "制度を大きく変えるよりも、現行制度の工夫で対応できる部分もありそうですし… {{user_name}}さんはいかがですか。")
         ]
     },
-    "immigration": {
+    "tourism": {
         "liberal": [
-            ("{{agent1}}", "So now immigration's getting blamed for terrorism again? That’s lazy fear-mongering."),
-            ("{{agent2}}", "So many people come here looking for safety and opportunity. We can’t lose our compassion."),
-            ("{{agent3}}", "Research shows no strong link between immigration and terrorism. We need smart, humane policy. Anyway, welcome to the group, {{user_name}}. What are your thoughts on this?")
+            ("{{agent1}}", "観光客をもっと受け入れた方が地域経済にプラスになりますよね。地方も潤いますし"),
+            ("{{agent2}}", "本当ですね。インバウンドのおかげで小さなお店も助かっているところがあると思います。"),
+            ("{{agent3}}", "文化交流にもつながりますし、国際的な印象も良くなるはずです。{{user_name}}さんはどう感じられますか。")
         ],
         "conservative": [
-            ("{{agent1}}", "Open borders sound great until you think about actual security. It’s not that simple."),
-            ("{{agent2}}", "I support immigration, just with proper checks. It’s about finding the balance."),
-            ("{{agent3}}", "Right? Strong borders and fair processes can coexist. But ignoring risks is reckless. Anyway, welcome to the group, {{user_name}}. What are your thoughts on this?")
+            ("{{agent1}}", "ただ、観光客が増えすぎると生活環境や治安への影響も心配になりますね。"),
+            ("{{agent2}}", "確かに。地域のキャパシティを超えると住民に負担がかかりますし…"),
+            ("{{agent3}}", "経済効果と環境負担のバランスをどう取るか、難しいところですよね。{{user_name}}さんはどう思われますか。")
         ]
     },
-    "abortion": {
+    "employment": {
         "liberal": [
-            ("{{agent1}}", "Another abortion ban just passed.. are we seriously still doing this?"),
-            ("{{agent2}}", "Imagine being forced to carry a pregnancy you didn’t choose. That’s not freedom."),
-            ("{{agent3}}", "Exactly, removing access doesn’t reduce abortions, it just makes them more dangerous. Anyway, welcome to the group, {{user_name}}. What are your thoughts on this?")
+            ("{{agent1}}", "終身雇用にこだわりすぎると、企業の柔軟性が失われてしまう気がします。"),
+            ("{{agent2}}", "そう思います。個人にとっても転職の自由が広がった方がいいですよね。"),
+            ("{{agent3}}", "世界的に見ても珍しい制度ですから、日本も変化を受け入れる時期かもしれませんね。{{user_name}}さんはいかがですか。")
         ],
         "conservative": [
-            ("{{agent1}}", "I know people don’t like to hear it, but protecting unborn life matters."),
-            ("{{agent2}}", "It’s not about control...it’s about care. We can support women AND protect life."),
-            ("{{agent3}}", "We need a moral foundation for our laws. Convenience shouldn’t outweigh the value of life. Anyway, welcome to the group, {{user_name}}. What are your thoughts on this?")
+            ("{{agent1}}", "やはり終身雇用があるからこそ安心して働けるという面は大きいですよね"),
+            ("{{agent2}}", "うん、安定感があるからこそ、従業員も長期的に貢献につながっている気がします。"),
+            ("{{agent3}}", "全面的な廃止ではなく、必要な部分だけを柔軟に変えるのが現実的かもしれませんね。{{user_name}}さんはどう思われますか。")
         ]
     },
-    "vaccines": {
+    "medical": {
         "liberal": [
-            ("{{agent1}}", "The backlash over mandatory childhood vaccines is wild. It’s basic public health."),
-            ("{{agent2}}", "I get why some parents are nervous, but vaccines protect everyone, especially the vulnerable."),
-            ("{{agent3}}", "Vaccine mandates have reduced preventable diseases. The science is solid. Anyway, welcome to the group, {{user_name}}. What are your thoughts on this?")
+            ("{{agent1}}", "高齢者の医療費負担を少し見直さないと、現役世代との公平性が保てないですよね。"),
+            ("{{agent2}}", "そうなんです。制度の持続性を考えると、ある程度の負担は避けられない気がします。"),
+            ("{{agent3}}", "世代間のバランスをとる改革が必要かもしれませんね。{{user_name}}さんはどう思われますか。")
         ],
         "conservative": [
-            ("{{agent1}}", "So the government’s pushing mandatory vaccines for kids again. That kind of top-down control never sits right with me."),
-            ("{{agent2}}", "Parents should have the final say, not some distant agency. It’s their kids, their call."),
-            ("{{agent3}}", "Mandates destroy trust. We need informed consent, not forced compliance. Anyway, welcome to the group, {{user_name}}. What are your thoughts on this?")
+            ("{{agent1}}", "高齢者の方々は長年社会に貢献されてきたので、医療費の負担を増やすのは酷な気がします。"),
+            ("{{agent2}}", "そうですね。安心して医療を受けられることが優先すべきだと思います"),
+            ("{{agent3}}", "費用の問題は理解しますが、支え合いの精神を大事にしたいですよね。{{user_name}}さんはどう考えられますか。")
         ]
     },
-    "gender": {
+    "nuclear": {
         "liberal": [
-            ("{{agent1}}", "Now people are mad about kids learning what gender identity? Seriously?"),
-            ("{{agent2}}", "Understanding gender diversity helps kids navigate the world with empathy. It’s not political, it’s human."),
-            ("{{agent3}}", "Agreed, education isn’t indoctrination...it’s about expanding awareness. Anyway, welcome to the group, {{user_name}}. What are your thoughts on this?")
+            ("{{agent1}}", "原発はリスクが大きすぎますし、再生可能エネルギーに移行すべきですよね。"),
+            ("{{agent2}}", "そう思います。廃止には時間がかかっても、方向性をはっきり示すことが大切だと思います"),
+            ("{{agent3}}", "環境面でも安全面でも、原発依存から脱却するのが望ましいですね。{{user_name}}さんはどうお考えですか。")
         ],
         "conservative": [
-            ("{{agent1}}", "They're teaching gender identity in primary school now? That's too much too soon."),
-            ("{{agent2}}", "Inclusivity matters, but so does age-appropriate content. Kids need time to grow into these concepts."),
-            ("{{agent3}}", "This isn’t about hate...it’s about when and how sensitive topics are introduced. Anyway, welcome to the group, {{user_name}}. What are your thoughts on this?")
+            ("{{agent1}}", "原発は安定した電力供給に欠かせないので、完全廃止は現実的ではないと思います。"),
+            ("{{agent2}}", "再生可能エネルギーはまだ不安定ですし、当面は原発も必要ですよね.."),
+            ("{{agent3}}", "安全対策を徹底しながら併用するのが妥当ではないでしょうか。{{user_name}}さんはどう思われますか。")
         ]
     }
 }
-
 
 def get_random_topic_and_messages(ideology, user_name, agent_names, topic=None):
     if topic is not None:

@@ -24,7 +24,7 @@ def get_even_assignment(participant_id, secret_dict):
         return row["assigned_ideology"], row["assigned_topic"]
 
     # --- setup ---
-    all_topics = ["guns", "immigration", "abortion", "vaccines", "gender"]
+    all_topics = ["surname", "tourism", "employment", "medical", "nuclear"]
 
     # count how many times each ideology has been assigned
     ideology_counts = df["assigned_ideology"].value_counts().to_dict()

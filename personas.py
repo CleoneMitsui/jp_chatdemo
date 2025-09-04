@@ -1,15 +1,13 @@
 import random
 
-male_names = ["Henry", "Lucas", "Ethan", "Ben", "James"]
-female_names = ["Olivia", "Emma", "Mia", "Charlotte", "Hazel"]
-names = male_names + female_names
+names = ["佐藤", "鈴木", "高橋", "田中", "伊藤", "渡辺", "山本", "中村", "小林", "吉田"]
 
 
 bigfive = {
     "HO": "You’re curious, creative, and open-minded. You often bring in fresh ideas or cultural references. You enjoy brainstorming and connect things in abstract ways. You ask open-ended questions, and your messages show intellectual interest or imagination. You're comfortable being playful in casual chat. You use all lowercase when typing.",
     "LO": "You’re practical, down-to-earth, and prefer familiar routines. You don’t like abstract topics. You keep messages simple and focused on the concrete or tried-and-true. You tend to express scepticism toward new ideas and prefer sticking to what already works. You like to keep the conversation grounded in common sense.",
     "HC": "You’re structured and careful with your words. You stay on topic, use clear and well-organised messages, and often help the group stay focused. You may remind others of tasks, suggest next steps, or clarify points. You rarely joke around during work discussions, and you type in complete, well-punctuated sentences.",
-    "LC": "You're casual, and spontaneous. You reply when you remember, and may be forgetful. Your tone is relaxed and friendly, often with typos, slang, or emojis. You prefer going with the flow rather than planning. You might joke that you forgot something or were distracted. You use all lowercase when typing.",
+    "LC": "You're casual, and spontaneous. You reply when you remember, and may be forgetful. Your tone is relaxed and friendly, sometimes with 誤字, slang, or emojis. You prefer going with the flow rather than planning. You might joke that you forgot something or were distracted. 句読点をあまり使わない.",
     "HE": "You’re energetic, expressive, and quick to respond. You share personal updates and use emojis or exclamations. You enjoy chatting for fun, not just for work. You’re not afraid to speak first or react strongly. Your messages tend to be upbeat, and you like including others in the conversation.",
     "LE": "You're reserved and don’t say over 2 sentences unless needed. You prefer brief, factual messages over chit-chat. You avoid being the centre of attention and rarely use emojis or jokes. Your style is calm and understated.",
     "HA": "You're warm, supportive, and collaborative. You express appreciation often, use polite language, and try to keep harmony. You avoid arguing and tend to soften your views when others disagree. You show concern for others' feelings and are quick to encourage or affirm teammates.",
@@ -40,46 +38,36 @@ def get_ideological_values(ideology):
 
 
 def generate_personas(ideology, nickname=None):
-    # sample 5 male and 5 female names
-    selected_males = random.sample(male_names, 5)
-    selected_females = random.sample(female_names, 5)
-    selected_names = selected_males + selected_females
+    # 10 names
+    selected_names = random.sample(names, 10)
 
     # assign traits
     selected_traits = random.sample(list(bigfive.items()), 10)
 
     # avatar pools
-    avatar_pool_m = ["agent_m1.png", "agent_m2.png", "agent_m3.png", "agent_m4.png", "agent_m5.png"]
-    avatar_pool_f = ["agent_f1.png", "agent_f2.png", "agent_f3.png", "agent_f4.png", "agent_f5.png"]
-    random.shuffle(avatar_pool_m)
-    random.shuffle(avatar_pool_f)
-
+    avatar_pool = [
+        "agent01.png", "agent02.png", "agent03.png", "agent04.png", "agent05.png",
+        "agent06.png", "agent07.png", "agent08.png", "agent09.png", "agent10.png"
+    ]
+    random.shuffle(avatar_pool)
+    
+    persona_dict = {}
     avatar_map = {}
-    gender_dict = {}
 
-    for name in selected_males:
-        avatar_map[name] = avatar_pool_m.pop()
-        gender_dict[name] = "male"
-
-    for name in selected_females:
-        avatar_map[name] = avatar_pool_f.pop()
-        gender_dict[name] = "female"
 
     # construct personas
-    persona_dict = {}
     for name, (trait_key, style_description) in zip(selected_names, selected_traits):
         ideological_blurb = get_ideological_values(ideology)
         persona_dict[name] = f"You are {name}. {ideological_blurb} {style_description}"
+        avatar_map[name] = avatar_pool.pop()
 
-    # trait key for follow-up styles
+    # trait key for follow-up styles (unchanged)
     trait_dict = {name: trait_key for name, (trait_key, _) in zip(selected_names, selected_traits)}
 
-    # randomly pick 3 for the current group
-    # exclude nickname from the group of 3 agents in the room
-    available_names = [name for name in selected_names if name.lower() != (nickname or "").lower()]
-    selected_group = random.sample(available_names, 3)
-
-
+    # pick 3 agents for the current room, excluding the user's nickname if provided
+    available_names = [n for n in selected_names if not nickname or n != nickname]
+    k = 3 if len(available_names) >= 3 else len(available_names)
+    selected_group = random.sample(available_names, k)
 
     return selected_group, persona_dict, trait_dict, avatar_map
 

@@ -400,7 +400,7 @@ def render_chat():
                     time.sleep(random.uniform(1.8, 3.2))  # "thinking" delay before the 1st agent only
 
                 # with st.chat_message("assistant"):
-                with st.spinner(f"{ai_name}さん is typing{'.' * random.randint(1, 3)}"):
+                with st.spinner(f"{ai_name}さんが入力中{'.' * random.randint(1, 3)}"):
                     time.sleep(random.uniform(2.5, 4.5)) # "typing" delay
                     context = [
                         {"role": "user", "content": f"You: {m['content']}"} if m["role"] == "user"
@@ -538,7 +538,7 @@ def render_chat():
                 ]
             }
 
-            with st.spinner(f"{followup_speaker} is typing..."):
+            with st.spinner(f"{followup_speaker}さんが入力中..."):
                 time.sleep(random.uniform(2.5, 4.0))
                 user_name = st.session_state.get("nickname", "you")
                 
